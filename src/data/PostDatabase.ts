@@ -1,5 +1,6 @@
 import { CustomError } from "../error/CustomError";
-import { InsertPostInputDTO } from "../model/postDTO";
+import { post } from "../model/post";
+import { InsertPostInputDTO, PostOutputDTO } from "../model/postDTO";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class PostDatabase extends BaseDatabase {
@@ -12,4 +13,20 @@ export class PostDatabase extends BaseDatabase {
             throw new CustomError(error.statusCode, error.message)
         }
     }
+
+    searchPostById = async (id: string): Promise<PostOutputDTO> => {
+        try {
+
+            const result = await PostDatabase.connection("labook_posts")
+            .select()
+            .where({id})
+
+            return result[0]
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
+
+
 }

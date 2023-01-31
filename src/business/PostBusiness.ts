@@ -1,7 +1,8 @@
 import { PostDatabase } from "../data/PostDatabase";
 import { CustomError } from "../error/CustomError";
-import { MissingData, WrongType } from "../error/PostErrors";
-import { InsertPostInputDTO, PostInputDTO } from "../model/postDTO";
+import { IdNotFound, MissingData, WrongType } from "../error/PostErrors";
+import { post } from "../model/post";
+import { InsertPostInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
 import { generateId } from "../services/idGenerator";
 
 export class PostBusiness {
@@ -33,5 +34,22 @@ export class PostBusiness {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
+
+    searchPostById = async(id: string): Promise<PostOutputDTO> => {
+        try {
+
+            if (!id || id === ":id") {
+                throw new IdNotFound()
+            }
+
+            const postDatabase = new PostDatabase()
+            const result = await postDatabase.searchPostById(id)
+
+            return result
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
 }
