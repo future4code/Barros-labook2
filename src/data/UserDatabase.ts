@@ -1,5 +1,5 @@
 import { CustomError } from "../error/CustomError";
-import { user } from "../model/user";
+import { friends, user } from "../model/user";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserDatabase extends BaseDatabase {
@@ -14,6 +14,38 @@ export class UserDatabase extends BaseDatabase {
             })
             .into("labook_users")
 
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
+
+    addFriends = async (friends: friends): Promise<void> => {
+        try {
+            await UserDatabase.connection.insert({
+                id: friends.id,
+                user_1_id: friends.userOneId,
+                user_2_id: friends.userTwoId
+            })
+            .into("labook_users_friends")
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+    
+    getAllUsers = async(): Promise<user[]> => {
+        try {
+            const result = await UserDatabase.connection("labook_users").select("*")
+            return result
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
+
+    getAllFriendships = async() => {
+        try {
+            const result = await UserDatabase.connection("labook_users_friends").select("*")
+            return result
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
