@@ -4,6 +4,8 @@ import { FriendsIdError, MissingData, UserIdNotFound } from "../error/UserErrors
 import { FriendsInputDTO, UserInputDTO } from "../model/userDTO";
 import { generateId } from "../services/idGenerator";
 
+const userDatabase = new UserDatabase()
+
 export class UserBusiness {
 
     createUser = async(input: UserInputDTO): Promise<void> => {
@@ -16,7 +18,6 @@ export class UserBusiness {
 
             const id = generateId()
 
-            const userDatabase = new UserDatabase()
             await userDatabase.createUser({
                 id, name, email, password
             })
@@ -34,7 +35,6 @@ export class UserBusiness {
                 throw new FriendsIdError()
             }
 
-            const userDatabase = new UserDatabase()
             const users = await userDatabase.getAllUsers()
 
             const getUserOne = users.find(user => user.id === userOneId)
@@ -68,6 +68,40 @@ export class UserBusiness {
                 id: friendshipId, userOneId: getUserOne.id, userTwoId: getUserTwo.id
             })
                         
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+
+    deleteFriend = async(input: FriendsInputDTO): Promise<void> => {
+        try {
+            const {userOneId, userTwoId} = input
+
+            if (!userOneId || userOneId === ":userId" || !userTwoId) {
+                throw new FriendsIdError()
+            }
+
+            const users = await userDatabase.getAllUsers()
+
+            const getUserOne = users.find(user => user.id === userOneId)
+            if (!getUserOne) {
+                throw new UserIdNotFound()
+            }
+
+            const getUserTwo = users.find(user => user.id === userTwoId)
+            if (!getUserTwo) {
+                throw new UserIdNotFound()
+            }
+
+            const friendships = await userDatabase.getAllFriendships()
+            const getFriendship = friendships.find(friendship => friendship.user_1_id === getUserOne.id && friendship.user_2_id === getUserTwo.id 
+                || friendship.user_2_id === getUserOne.id && friendship.user_1_id === getUserTwo.id)
+
+            if (!getFriendship) {
+                throw new CustomError (400, "The users selected are not friends.")
+            }
+
+            await userDatabase.deleteFriend(getFriendship.id)
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
