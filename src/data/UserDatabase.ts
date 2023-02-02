@@ -1,5 +1,6 @@
 import { CustomError } from "../error/CustomError";
 import { friends, user } from "../model/user";
+import { FriendsOutputDTO } from "../model/userDTO";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserDatabase extends BaseDatabase {
@@ -42,11 +43,19 @@ export class UserDatabase extends BaseDatabase {
         }
     }
 
-    getAllFriendships = async() => {
+    getAllFriendships = async(): Promise<FriendsOutputDTO[]> => {
         try {
             const result = await UserDatabase.connection("labook_users_friends").select("*")
             return result
         } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
+
+    deleteFriend = async(id: string): Promise<void> => {
+        try {
+            await UserDatabase.connection("labook_users_friends").delete().where({id})
+        } catch (error: any) {
             throw new CustomError(error.statusCode, error.message)
         }
     }

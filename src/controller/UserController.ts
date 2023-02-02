@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
 import { FriendsInputDTO, UserInputDTO } from "../model/userDTO";
 
+const userBusiness = new UserBusiness()
+
 export class UserController {
     createUser = async (req: Request, res: Response): Promise<void> => {
         let message = "Success!"
@@ -13,7 +15,6 @@ export class UserController {
                 password: req.body.password
             }
 
-            const userBusiness = new UserBusiness()
             await userBusiness.createUser(input)
 
             res.status(201).send({message})
@@ -34,7 +35,6 @@ export class UserController {
                 userTwoId: friendId
             }
             
-            const userBusiness = new UserBusiness()
             await userBusiness.addFriends(users)
 
             res.status(201).send({message})
@@ -42,5 +42,26 @@ export class UserController {
         } catch (error:any) {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }
-    }
+    };
+
+    deleteFriend = async (req: Request, res: Response): Promise<void> => {
+        let message = "Friendship deleted."
+
+        try {
+            const userId = req.params.userId as string
+            const friendId = req.body.friendId as string
+
+            const users: FriendsInputDTO = {
+                userOneId: userId,
+                userTwoId: friendId
+            }
+            
+            await userBusiness.deleteFriend(users)
+
+            res.status(201).send({message})
+
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
 }
