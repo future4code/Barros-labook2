@@ -44,6 +44,7 @@ export class PostDatabase extends BaseDatabase {
             const result = await PostDatabase.connection("labook_posts")
             .select()
             .where("author_id", "like", `${id}`)
+
             return result
 
         } catch (error:any) {

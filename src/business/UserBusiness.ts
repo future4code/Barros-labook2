@@ -109,58 +109,5 @@ export class UserBusiness {
             throw new CustomError(error.statusCode, error.message)
         }
     };
-
-    getUserFeed = async(input: string): Promise<PostOutputDTO[]> => {
-        try {
-            const userId: string = input
-
-            const users = await userDatabase.getAllUsers()
-
-            const getUser = users.find(user => user.id === userId)
-            if (!getUser) {
-                throw new UserIdNotFound()
-            }
-
-            const friendsList = await userDatabase.getUserFriendships(userId)
-            if (!friendsList) {
-                throw new CustomError(400, "No friends added.")
-            }
-
-            let feed: PostOutputDTO[] = []
-            let posts = null
-            for (let i = 0; i < friendsList.length; i++) {
-                if (friendsList[i].user_1_id !== getUser.id) {
-                    posts = await postDatabase.getUserPosts(friendsList[i].user_1_id)
-                    if (posts !== null) {
-                        feed.push(...posts)
-                    }
-                }
-                if (friendsList[i].user_2_id !== getUser.id) {
-                    posts = await postDatabase.getUserPosts(friendsList[i].user_2_id)
-                    if (posts !== null) {
-                        feed.push(...posts)
-                    }
-                 }
-            }
-
-            if (feed.length === 0) {
-                throw new CustomError(400, "No posts available.")
-            }
-
-            function order (a: PostOutputDTO , b: PostOutputDTO) {
-                if (a.created_at > b.created_at) {
-                    return -1
-                } else if (a.created_at < b.created_at) {
-                    return 1
-                } else {
-                    return 0
-                }
-            }
-        
-            return feed.sort(order)
-
-        } catch (error:any) {
-            throw new CustomError(error.statusCode, error.message)
-        }
-    };
+    
 }

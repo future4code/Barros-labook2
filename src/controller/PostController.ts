@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostBusiness";
+import { UserBusiness } from "../business/UserBusiness";
+import { PostDatabase } from "../data/PostDatabase";
+import { UserDatabase } from "../data/UserDatabase";
+import { CustomError } from "../error/CustomError";
+import { UserIdNotFound } from "../error/UserErrors";
 import { post } from "../model/post";
-import { CommentInputDTO, LikesInputDTO, PostInputDTO } from "../model/postDTO";
+import { CommentInputDTO, LikesInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
 
 export class PostController {
     createUser = async (req: Request, res: Response): Promise<void> => {
@@ -43,6 +48,21 @@ export class PostController {
             }
 
             res.status(200).send({message, post})
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
+
+    getFeed = async (req: Request, res: Response): Promise<void> => {
+
+        try {
+            const userId = req.params.userId as string
+            
+            const postBusiness = new PostBusiness()
+            const result = await postBusiness.getUserFeed(userId)
+
+            res.status(201).send(result)
+
         } catch (error:any) {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }

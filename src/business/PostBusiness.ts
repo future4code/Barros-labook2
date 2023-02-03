@@ -54,6 +54,62 @@ export class PostBusiness {
         }
     };
 
+    getUserFeed = async(id: string): Promise<PostOutputDTO[]> => {
+        try {
+            const userId: string = id
+
+            const userDatabase = new UserDatabase()
+            const users = await userDatabase.getAllUsers()
+
+            const getUser = users.find(user => user.id === userId)
+            if (!getUser) {
+                throw new UserIdNotFound()
+            }
+
+            const friendsList = await userDatabase.getUserFriendships(userId)
+            if (!friendsList) {
+                throw new CustomError(400, "No friends added.")
+            }
+
+            const postDatabase = new PostDatabase()
+            let feed: PostOutputDTO[] = []
+            let posts: PostOutputDTO[] = []
+            for (let i = 0; i < friendsList.length; i++) {
+                if (friendsList[i].user_1_id !== getUser.id) {
+                    posts = await postDatabase.getUserPosts(friendsList[i].user_1_id)
+                    if (posts.length > 0) {
+                        feed.push(...posts)
+                    }
+                }
+                if (friendsList[i].user_2_id !== getUser.id) {
+                    posts = await postDatabase.getUserPosts(friendsList[i].user_2_id)
+                    if (posts.length > 0) {
+                        feed.push(...posts)
+                    }
+                 }
+            }
+
+            if (feed.length === 0) {
+                throw new CustomError(400, "No posts available.")
+            }
+
+            function order (a: PostOutputDTO , b: PostOutputDTO) {
+                if (a.created_at > b.created_at) {
+                    return -1
+                } else if (a.created_at < b.created_at) {
+                    return 1
+                } else {
+                    return 0
+                }
+            }
+        
+            return feed.sort(order)
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+
     getPostsByType = async(type: string): Promise<PostOutputDTO[]> => {
         try {
             if (!type) {
@@ -202,5 +258,5 @@ export class PostBusiness {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 }
