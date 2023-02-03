@@ -1,7 +1,9 @@
 import { PostDatabase } from "../data/PostDatabase";
+import { UserDatabase } from "../data/UserDatabase";
 import { CustomError } from "../error/CustomError";
 import { IdNotFound, MissingData, WrongType } from "../error/PostErrors";
-import { InsertPostInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
+import { UserIdNotFound } from "../error/UserErrors";
+import { InsertLikesInputDTO, InsertPostInputDTO, LikesInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
 import { generateId } from "../services/idGenerator";
 
 export class PostBusiness {
@@ -80,5 +82,52 @@ export class PostBusiness {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
+
+    likeAPost = async(input: LikesInputDTO): Promise<void> => {
+        try {
+            const { postId, userId } = input
+
+            if (!postId || !userId) {
+                throw new CustomError(400, "Insert post and user id.")
+            }
+
+            const userDatabase = new UserDatabase()
+            const allUsers = await userDatabase.getAllUsers()
+            const findUser = allUsers.find(user => user.id === userId)
+            if (!findUser) {
+                throw new UserIdNotFound()
+            }
+
+            const postDatabase = new PostDatabase()
+            const getPost = await postDatabase.searchPostById(postId)
+            if (!getPost) {
+                throw new CustomError(400, "Post not found.")
+            }
+
+            const allLikes = await postDatabase.getAllLikes()
+            console.log(allLikes)
+            for (let i = 0; i < allLikes.length; i++) {
+                if (allLikes[i].user_id === userId) {
+                    for (let y = 0; y < allLikes.length; y++) {
+                        if (allLikes[y].post_id === postId) {
+                            throw new CustomError(400, "You have already liked this post.")
+                        }
+                    }
+                }
+            }
+
+            const likeId = generateId()
+
+            const likeInput: InsertLikesInputDTO = {
+                id: likeId,
+                user_id: userId,
+                post_id: postId
+            }
+
+            await postDatabase.likeAPost(likeInput)
+        } catch (error:any) {
+           throw new CustomError(error.statusCode, error.message)
+        }
+    };
 }

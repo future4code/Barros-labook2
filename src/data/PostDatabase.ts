@@ -1,6 +1,5 @@
 import { CustomError } from "../error/CustomError";
-import { post } from "../model/post";
-import { InsertPostInputDTO, PostOutputDTO } from "../model/postDTO";
+import { InsertLikesInputDTO, InsertPostInputDTO, LikesOutputDTO, PostOutputDTO } from "../model/postDTO";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class PostDatabase extends BaseDatabase {
@@ -13,6 +12,17 @@ export class PostDatabase extends BaseDatabase {
             throw new CustomError(error.statusCode, error.message)
         }
     };
+
+    getAllPosts = async(): Promise<PostOutputDTO[]> => {
+        try {
+
+            const result = await PostDatabase.connection("labook_posts").select()
+            return result
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
 
     searchPostById = async (id: string): Promise<PostOutputDTO> => {
         try {
@@ -53,4 +63,21 @@ export class PostDatabase extends BaseDatabase {
             throw new CustomError(error.statusCode, error.message)
         }
     };
+
+    likeAPost = async (like: InsertLikesInputDTO): Promise<void> => {
+        try {
+            await PostDatabase.connection("labook_posts_liked").insert(like)
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+
+    getAllLikes = async(): Promise<LikesOutputDTO[]> => {
+        try {
+            const result = await PostDatabase.connection("labook_posts_liked").select()
+            return result
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
 }

@@ -23,3 +23,20 @@ export interface PostOutputDTO {
     created_at: Date,
     author_id: string,
 }
+
+export interface LikesInputDTO {
+    postId: string,
+    userId: string
+}
+
+export interface InsertLikesInputDTO {
+    id: string,
+    post_id: string,
+    user_id: string
+}
+
+export interface LikesOutputDTO {
+    id: string,
+    post_id: string,
+    user_id: string
+}
