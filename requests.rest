@@ -39,7 +39,7 @@ Content-Type: application/json
 }
 
 ### GET USER FEED
-GET http://localhost:3003/users/feed/c2a13380-ddd0-4746-82db-b31e8210c2b1
+GET http://localhost:3003/posts/feed/c2a13380-ddd0-4746-82db-b31e8210c2b1
 
 ### GET POST BY TYPE
 GET http://localhost:3003/posts/type?type=event
