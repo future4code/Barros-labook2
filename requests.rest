@@ -1,0 +1,70 @@
+### INSERT USER
+POST http://localhost:3003/users/user
+Content-Type: application/json
+
+{
+    "name": "Luiza",
+    "email": "luiza@fernandez.com",
+    "password": "marklees2s2s2s2"
+}
+
+### INSERT POST
+POST http://localhost:3003/posts/post
+Content-Type: application/json
+
+{
+    "photo": "http://",
+    "authorId": "a4f91cdb-5614-449c-8a0e-8f059ba87f89",
+    "description": "test6",
+    "type": "event"
+}
+
+### GET POST BY ID
+GET http://localhost:3003/posts/post/be651ea4-14ff-44c4-a9b0-8bbbd9cea78e
+
+### ADD FRIEND
+POST http://localhost:3003/users/0615c1b9-6c18-4569-b59c-e1dd5e247321/add
+Content-Type: application/json
+
+{
+    "friendId": "c2a13380-ddd0-4746-82db-b31e8210c2b1" 
+}
+
+### DELETE FRIEND
+DELETE http://localhost:3003/users/a4f91cdb-5614-449c-8a0e-8f059ba87f89/delete
+Content-Type: application/json
+
+{
+    "friendId": "0615c1b9-6c18-4569-b59c-e1dd5e247321" 
+}
+
+### GET USER FEED
+GET http://localhost:3003/users/feed/c2a13380-ddd0-4746-82db-b31e8210c2b1
+
+### GET POST BY TYPE
+GET http://localhost:3003/posts/type?type=event
+
+### LIKE A POST
+POST http://localhost:3003/posts/78c2f336-0c2a-4aad-9b03-80370a8da626
+Content-Type: application/json
+
+{
+    "userId": "c2a13380-ddd0-4746-82db-b31e8210c2b1"
+}
+
+### DISLIKE A POST
+DELETE http://localhost:3003/posts/78c2f336-0c2a-4aad-9b03-80370a8da626
+Content-Type: application/json
+
+{
+    "userId": "c2a13380-ddd0-4746-82db-b31e8210c2b1"
+}
+
+### COMMENT
+POST http://localhost:3003/posts/comment/78c2f336-0c2a-4aad-9b03-80370a8da626
+Content-Type: application/json
+
+{
+    "userId": "c2a13380-ddd0-4746-82db-b31e8210c2b1",
+    "comment": "this comment is a test"
+}
