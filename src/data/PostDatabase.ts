@@ -1,5 +1,5 @@
 import { CustomError } from "../error/CustomError";
-import { InsertLikesInputDTO, InsertPostInputDTO, LikesOutputDTO, PostOutputDTO } from "../model/postDTO";
+import { InsertCommentInputDTO, InsertLikesInputDTO, InsertPostInputDTO, LikesOutputDTO, PostOutputDTO } from "../model/postDTO";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class PostDatabase extends BaseDatabase {
@@ -88,6 +88,14 @@ export class PostDatabase extends BaseDatabase {
         try {
             const result = await PostDatabase.connection("labook_posts_liked").select()
             return result
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+
+    leaveAComment = async(comment: InsertCommentInputDTO): Promise<void> => {
+        try {
+            await PostDatabase.connection("labook_posts_comments").insert(comment)
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }

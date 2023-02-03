@@ -40,3 +40,16 @@ export interface LikesOutputDTO {
     post_id: string,
     user_id: string
 }
+
+export interface CommentInputDTO {
+    postId: string,
+    userId: string,
+    comment: string
+}
+
+export interface InsertCommentInputDTO {
+    id: string,
+    comment: string,
+    post_id: string,
+    user_id: string
+}

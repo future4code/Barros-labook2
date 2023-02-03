@@ -3,7 +3,7 @@ import { UserDatabase } from "../data/UserDatabase";
 import { CustomError } from "../error/CustomError";
 import { IdNotFound, MissingData, WrongType } from "../error/PostErrors";
 import { UserIdNotFound } from "../error/UserErrors";
-import { InsertLikesInputDTO, InsertPostInputDTO, LikesInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
+import { CommentInputDTO, InsertCommentInputDTO, InsertLikesInputDTO, InsertPostInputDTO, LikesInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
 import { generateId } from "../services/idGenerator";
 
 export class PostBusiness {
@@ -158,6 +158,47 @@ export class PostBusiness {
             }
 
             await postDatabase.dislikeAPost(findLike.id)
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+
+    leaveAComment = async(input: CommentInputDTO): Promise<void> => {
+        try {
+            const { postId, userId, comment } = input
+
+            if (!postId || !userId) {
+                throw new CustomError(400, "Insert post and user id.")
+            }
+
+            const userDatabase = new UserDatabase()
+            const allUsers = await userDatabase.getAllUsers()
+            const findUser = allUsers.find(user => user.id === userId)
+            if (!findUser) {
+                throw new UserIdNotFound()
+            }
+
+            const postDatabase = new PostDatabase()
+            const getPost = await postDatabase.searchPostById(postId)
+            if (!getPost) {
+                throw new CustomError(400, "Post not found.")
+            }
+
+            if (!comment) {
+                throw new CustomError(400, "Comment can not be blank.")
+            }
+
+            const commentId = generateId()
+
+            const newComment: InsertCommentInputDTO = {
+                id: commentId,
+                user_id: userId,
+                post_id: postId,
+                comment: comment
+            } 
+
+            await postDatabase.leaveAComment(newComment)
+
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }

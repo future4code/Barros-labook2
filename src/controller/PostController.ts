@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostBusiness";
 import { post } from "../model/post";
-import { LikesInputDTO, PostInputDTO } from "../model/postDTO";
+import { CommentInputDTO, LikesInputDTO, PostInputDTO } from "../model/postDTO";
 
 export class PostController {
     createUser = async (req: Request, res: Response): Promise<void> => {
@@ -95,4 +95,23 @@ export class PostController {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }
     };
+
+    leaveAComment = async(req: Request, res: Response): Promise<void> => {
+        let message = "Comment posted!"
+
+        try {
+            const input: CommentInputDTO = {
+                postId: req.params.postId,
+                userId: req.body.userId,
+                comment: req.body.comment
+            }
+
+            const postBusiness = new PostBusiness()
+            await postBusiness.leaveAComment(input)
+
+            res.status(201).send({message})
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    }
 }

@@ -30,3 +30,12 @@ CREATE TABLE IF NOT EXISTS labook_posts_liked (
     FOREIGN KEY (post_id) REFERENCES labook_posts (id),
     FOREIGN KEY (user_id) REFERENCES labook_users (id)
 );
+
+CREATE TABLE IF NOT EXISTS labook_posts_comments (
+    id VARCHAR(255) PRIMARY KEY,
+    comment TEXT NOT NULL,
+    post_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES labook_posts (id),
+    FOREIGN KEY (user_id) REFERENCES labook_users (id)
+);
