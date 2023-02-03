@@ -51,4 +51,34 @@ export class PostBusiness {
             throw new CustomError(error.statusCode, error.message)
         }
     };
+
+    getPostsByType = async(type: string): Promise<PostOutputDTO[]> => {
+        try {
+            if (!type) {
+                throw new CustomError(400, "Type not informed.")
+            }
+
+            if (type !== "normal" && type !== "event") {
+                throw new WrongType()
+            }
+
+            const postDatabase = new PostDatabase()
+            const result = await postDatabase.getPostsbyType(type)
+
+            function order (a: PostOutputDTO , b: PostOutputDTO) {
+                if (a.created_at > b.created_at) {
+                    return -1
+                } else if (a.created_at < b.created_at) {
+                    return 1
+                } else {
+                    return 0
+                }
+            }
+        
+            return result.sort(order)
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
 }
