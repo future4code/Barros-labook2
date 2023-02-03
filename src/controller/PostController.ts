@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostBusiness";
 import { post } from "../model/post";
-import { PostInputDTO } from "../model/postDTO";
+import { LikesInputDTO, PostInputDTO } from "../model/postDTO";
 
 export class PostController {
     createUser = async (req: Request, res: Response): Promise<void> => {
@@ -56,6 +56,41 @@ export class PostController {
             const result = await postBusiness.getPostsByType(type)
 
             res.status(200).send(result)
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
+    
+    likeAPost = async (req: Request, res: Response): Promise<void> => {
+        let message = "Post liked!"
+        try {
+            const input: LikesInputDTO = {
+                postId: req.params.postId,
+                userId: req.body.userId
+            }
+
+            const postBusiness = new PostBusiness()
+            await postBusiness.likeAPost(input)
+
+            res.status(201).send({message})
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
+
+    dislikeAPost = async (req: Request, res: Response): Promise<void> => {
+        let message = "Post disliked!"
+        
+        try {
+            const input: LikesInputDTO = {
+                postId: req.params.postId,
+                userId: req.body.userId
+            }
+
+            const postBusiness = new PostBusiness()
+            await postBusiness.dislikeAPost(input)
+
+            res.status(201).send({message})
         } catch (error:any) {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }
