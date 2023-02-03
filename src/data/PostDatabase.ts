@@ -39,7 +39,18 @@ export class PostDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 
+    getPostsbyType = async (type: string): Promise<PostOutputDTO[]> => {
+        try {
 
+            const result = await PostDatabase.connection("labook_posts")
+            .select()
+            .where("type", "like", `${type}`)
+            return result
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
 }
