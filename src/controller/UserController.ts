@@ -64,4 +64,18 @@ export class UserController {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }
     };
+
+    getFeed = async (req: Request, res: Response): Promise<void> => {
+
+        try {
+            const userId = req.params.userId as string
+            
+            const result = await userBusiness.getUserFeed(userId)
+
+            res.status(201).send(result)
+
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
 }

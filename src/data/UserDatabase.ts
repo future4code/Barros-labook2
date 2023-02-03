@@ -18,7 +18,7 @@ export class UserDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 
     addFriends = async (friends: friends): Promise<void> => {
         try {
@@ -41,7 +41,7 @@ export class UserDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 
     getAllFriendships = async(): Promise<FriendsOutputDTO[]> => {
         try {
@@ -50,7 +50,19 @@ export class UserDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
+
+    getUserFriendships = async(id: string): Promise<FriendsOutputDTO[]> => {
+        try {
+            const result = await UserDatabase.connection("labook_users_friends").select()
+            .where("user_1_id", "like", `${id}`)
+            .orWhere("user_2_id", "like", `${id}`)
+
+            return result
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
 
     deleteFriend = async(id: string): Promise<void> => {
         try {
@@ -58,5 +70,5 @@ export class UserDatabase extends BaseDatabase {
         } catch (error: any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 }

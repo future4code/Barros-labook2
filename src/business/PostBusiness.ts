@@ -1,7 +1,6 @@
 import { PostDatabase } from "../data/PostDatabase";
 import { CustomError } from "../error/CustomError";
 import { IdNotFound, MissingData, WrongType } from "../error/PostErrors";
-import { post } from "../model/post";
 import { InsertPostInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
 import { generateId } from "../services/idGenerator";
 

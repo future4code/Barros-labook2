@@ -12,7 +12,7 @@ export class PostDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 
     searchPostById = async (id: string): Promise<PostOutputDTO> => {
         try {
@@ -22,6 +22,19 @@ export class PostDatabase extends BaseDatabase {
             .where({id})
 
             return result[0]
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    };
+
+    getUserPosts = async (id: string): Promise<PostOutputDTO[]> => {
+        try {
+
+            const result = await PostDatabase.connection("labook_posts")
+            .select()
+            .where("author_id", "like", `${id}`)
+            return result
 
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
