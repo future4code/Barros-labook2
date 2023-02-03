@@ -77,4 +77,22 @@ export class PostController {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }
     };
+
+    dislikeAPost = async (req: Request, res: Response): Promise<void> => {
+        let message = "Post disliked!"
+        
+        try {
+            const input: LikesInputDTO = {
+                postId: req.params.postId,
+                userId: req.body.userId
+            }
+
+            const postBusiness = new PostBusiness()
+            await postBusiness.dislikeAPost(input)
+
+            res.status(201).send({message})
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
 }

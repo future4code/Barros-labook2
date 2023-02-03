@@ -72,6 +72,18 @@ export class PostDatabase extends BaseDatabase {
         }
     };
 
+    dislikeAPost = async(id: string): Promise<void> => {
+        try {
+            
+            await PostDatabase.connection("labook_posts_liked")
+            .delete()
+            .where({id})
+
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
+
     getAllLikes = async(): Promise<LikesOutputDTO[]> => {
         try {
             const result = await PostDatabase.connection("labook_posts_liked").select()
@@ -79,5 +91,5 @@ export class PostDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
-    }
+    };
 }
