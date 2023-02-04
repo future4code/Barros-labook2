@@ -105,7 +105,7 @@ export class PostController {
     };
 
     unlikeAPost = async (req: Request, res: Response): Promise<void> => {
-        let message = "Post disliked!"
+        let message = "Post unliked!"
         
         try {
             const input: LikesInputDTO = {
