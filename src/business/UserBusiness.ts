@@ -1,13 +1,12 @@
-import { PostDatabase } from "../data/PostDatabase";
 import { UserDatabase } from "../data/UserDatabase";
 import { CustomError } from "../error/CustomError";
 import { FriendsIdError, MissingData, UserIdNotFound } from "../error/UserErrors";
-import { PostOutputDTO } from "../model/postDTO";
-import { FriendsInputDTO, FriendsOutputDTO, UserInputDTO } from "../model/userDTO";
+import { user } from "../model/user";
+import { FriendsInputDTO, UserInputDTO} from "../model/userDTO";
+import { HashManager } from "../services/HashManager";
 import { generateId } from "../services/idGenerator";
 
 const userDatabase = new UserDatabase()
-const postDatabase = new PostDatabase()
 
 export class UserBusiness {
 
@@ -20,15 +19,26 @@ export class UserBusiness {
             }
 
             const id = generateId()
+            const hashManager = new HashManager()
+            const cypherPassword = await hashManager.hash(password)
 
             await userDatabase.createUser({
-                id, name, email, password
+                id, name, email, password: cypherPassword
             })
 
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }
     };
+
+    getAllUsers = async(): Promise<user[]> => {
+        try {
+            const result = await userDatabase.getAllUsers()
+            return result
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
 
     addFriends = async(input: FriendsInputDTO): Promise<void> => {
         try {

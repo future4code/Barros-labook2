@@ -3,7 +3,8 @@ import { PostController } from '../controller/PostController'
 
 export const postRouter = express.Router()
 const postController = new PostController()
-postRouter.post("/post", postController.createUser)
+postRouter.get("/", postController.getAllPosts)
+postRouter.post("/post", postController.createPost)
 postRouter.get("/post/:id", postController.searchPostById)
 postRouter.get("/type", postController.getPostsByTpe)
 postRouter.post("/:postId", postController.likeAPost)

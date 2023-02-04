@@ -23,6 +23,16 @@ export class UserController {
         }
     };
 
+    getAllUsers = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const result = await userBusiness.getAllUsers()
+
+            res.status(200).send(result)
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    }
+
     addFriends = async (req: Request, res: Response): Promise<void> => {
         let message = "Success! You are now friends."
 
