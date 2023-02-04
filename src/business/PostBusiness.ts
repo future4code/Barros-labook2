@@ -197,7 +197,7 @@ export class PostBusiness {
         }
     };
 
-    dislikeAPost = async(input: LikesInputDTO): Promise<void> => {
+    unlikeAPost = async(input: LikesInputDTO): Promise<void> => {
         try {
             const { postId, userId } = input
 
@@ -224,7 +224,7 @@ export class PostBusiness {
                 throw new CustomError(400, "The post selected was not 'liked' by the user informed.")
             }
 
-            await postDatabase.dislikeAPost(findLike.id)
+            await postDatabase.unlikeAPost(findLike.id)
         } catch (error:any) {
             throw new CustomError(error.statusCode, error.message)
         }

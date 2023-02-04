@@ -104,7 +104,7 @@ export class PostController {
         }
     };
 
-    dislikeAPost = async (req: Request, res: Response): Promise<void> => {
+    unlikeAPost = async (req: Request, res: Response): Promise<void> => {
         let message = "Post disliked!"
         
         try {
@@ -114,7 +114,7 @@ export class PostController {
             }
 
             const postBusiness = new PostBusiness()
-            await postBusiness.dislikeAPost(input)
+            await postBusiness.unlikeAPost(input)
 
             res.status(201).send({message})
         } catch (error:any) {
