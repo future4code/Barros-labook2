@@ -54,6 +54,17 @@ export class PostBusiness {
         }
     };
 
+    getAllPosts = async(): Promise<PostOutputDTO[]> => {
+        try {
+            const postDatabase = new PostDatabase()
+            const result = await postDatabase.getAllPosts()
+
+            return result
+        } catch (error:any) {
+            throw new CustomError(error.statusCode, error.message)
+        }
+    }
+
     getUserFeed = async(id: string): Promise<PostOutputDTO[]> => {
         try {
             const userId: string = id

@@ -1,15 +1,10 @@
 import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostBusiness";
-import { UserBusiness } from "../business/UserBusiness";
-import { PostDatabase } from "../data/PostDatabase";
-import { UserDatabase } from "../data/UserDatabase";
-import { CustomError } from "../error/CustomError";
-import { UserIdNotFound } from "../error/UserErrors";
 import { post } from "../model/post";
 import { CommentInputDTO, LikesInputDTO, PostInputDTO, PostOutputDTO } from "../model/postDTO";
 
 export class PostController {
-    createUser = async (req: Request, res: Response): Promise<void> => {
+    createPost = async (req: Request, res: Response): Promise<void> => {
         let message = "Success!"
 
         try {
@@ -48,6 +43,17 @@ export class PostController {
             }
 
             res.status(200).send({message, post})
+        } catch (error:any) {
+            res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
+        }
+    };
+
+    getAllPosts = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const postBusiness = new PostBusiness();
+            const result = await postBusiness.getAllPosts()
+
+            res.status(200).send(result)
         } catch (error:any) {
             res.status(error.statusCode || 400).send(error.message || error.sqlMessage)
         }
