@@ -73,7 +73,7 @@ export class PostDatabase extends BaseDatabase {
         }
     };
 
-    dislikeAPost = async(id: string): Promise<void> => {
+    unlikeAPost = async(id: string): Promise<void> => {
         try {
             
             await PostDatabase.connection("labook_posts_liked")

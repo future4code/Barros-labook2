@@ -58,7 +58,7 @@ Content-Type: application/json
     "userId": "c2a13380-ddd0-4746-82db-b31e8210c2b1"
 }
 
-### DISLIKE A POST
+### UNLIKE A POST
 DELETE http://localhost:3003/posts/78c2f336-0c2a-4aad-9b03-80370a8da626
 Content-Type: application/json
 
